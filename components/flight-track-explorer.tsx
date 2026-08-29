@@ -42,7 +42,7 @@ function formatTime(value?: string | null) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   if (date.getFullYear() < 2000) return '장비시각 오류';
-  return date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Seoul' });
 }
 
 function escapeHtml(value: string) {
@@ -169,7 +169,7 @@ export function FlightTrackExplorer({ campaignId, domainId }: { campaignId: stri
           </div>
         </aside>
       </div>
-      <p className="mt-3 text-xs leading-5 text-[#7a8581]">경로는 원본 GPS EXIF를 균등 표본화한 탐색용 선입니다. 정밀 측량·항법용 궤적으로 사용하지 마세요. 시간대가 검증되지 않은 장비는 세트별 시간 기준을 함께 표시합니다.</p>
+      <p className="mt-3 text-xs leading-5 text-[#7a8581]">표시시각은 모두 KST(UTC+09)입니다. 경로는 원본 GPS EXIF를 균등 표본화한 탐색용 선이며 정밀 측량·항법용 궤적으로 사용하지 마세요. 장비시각의 근거는 세트별 시간 기준에 함께 표시합니다.</p>
     </section>
   );
 }

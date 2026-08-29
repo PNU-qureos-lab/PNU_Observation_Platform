@@ -17,6 +17,8 @@
 
 경로 생성 시 로컬 원자료 경로는 `AGRICULTURE_OBSERVATION_ROOT` 환경변수로 전달합니다. 공개 JSON은 대용량 원본 대신 세트별 균등 표본 GPS와 555 nm 시계열 표본을 저장합니다.
 
+사이트의 모든 관측시각은 `Asia/Seoul`, KST(UTC+09), 24시간제로 표시합니다. MicaSense EXIF의 UTC 장비시각은 9시간을 더해 KST로 변환하고, DJI·RAMSES처럼 현장에서 로컬시각으로 기록된 값은 KST로 해석합니다. 원본 날짜가 관측일과 다른 기록은 임의로 합치지 않고 별도 경고로 보존합니다.
+
 ## 새 관측 분야 추가
 
 1. `lib/catalog.ts`의 `domains`에 분야 ID, 이름, 색상, 설명을 등록합니다.

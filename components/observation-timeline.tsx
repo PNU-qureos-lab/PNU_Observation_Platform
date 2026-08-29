@@ -136,7 +136,7 @@ function buildTimeline(campaign: Campaign, campaignDate: string) {
       start: alignedStart,
       end: Math.max(alignedStart + 2, alignedEnd),
       detail: `${formatMinute(alignedStart)}–${formatMinute(Math.max(alignedStart + 2, alignedEnd))}`,
-      timeBasis: inferred ? '촬영폴더 시각으로 정렬' : track.timeBasis,
+      timeBasis: inferred ? '촬영폴더 시각을 KST(UTC+09)로 해석' : track.timeBasis,
       inferred,
     });
   }
@@ -274,7 +274,7 @@ export function ObservationTimeline({ campaignId, campaignDate, domainId, timeWi
     <section className="py-8">
       <div className="rounded-[28px] border border-border bg-white p-5 sm:p-8">
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-          <div><p className="text-xs font-bold tracking-[0.13em] text-[#65736e] uppercase">Observation timeline</p><h2 className="mt-2 text-2xl font-black">데이터 관측 타임라인</h2><p className="mt-2 text-sm leading-6 text-[#65736e]">장비 메타데이터와 촬영폴더 시각을 관측일의 KST 시간축에 정렬했습니다.</p></div>
+          <div><p className="text-xs font-bold tracking-[0.13em] text-[#65736e] uppercase">Observation timeline · Asia/Seoul</p><h2 className="mt-2 text-2xl font-black">데이터 관측 타임라인</h2><p className="mt-2 text-sm leading-6 text-[#65736e]">UTC 장비시각은 9시간을 더하고, 카메라 로컬시각은 현장 KST로 해석해 하나의 KST(UTC+09) 시간축에 정렬했습니다.</p></div>
           {end > start && <div className="rounded-2xl bg-[#e8f6f5] px-5 py-3 text-right"><p className="text-xs font-bold text-[#46716f]">통합 관측창</p><p className="mt-1 font-mono text-xl font-black text-[#00535b]">{formatMinute(start)}–{formatMinute(end)}</p></div>}
         </div>
 
@@ -293,7 +293,7 @@ export function ObservationTimeline({ campaignId, campaignDate, domainId, timeWi
           {untimedSensors.length > 0 && <div className="rounded-2xl border border-border bg-[#f6f8f5] p-5"><h3 className="text-sm font-black">시각 메타데이터가 없는 자료</h3><div className="mt-3 flex flex-wrap gap-2">{untimedSensors.map((sensor) => <Badge key={sensor} variant="secondary" className="bg-white text-[#56635f]">{sensor}</Badge>)}</div><p className="mt-3 text-xs leading-5 text-[#65736e]">자료는 존재하지만 시작·종료시각을 확인할 수 없어 시간축 밖에 표시했습니다.</p></div>}
         </div>}
 
-        <p className="mt-5 text-xs leading-5 text-[#7a8581]">막대에 마우스를 올리면 세트명과 시간 기준을 볼 수 있습니다. 촬영폴더 시각으로 보정한 구간은 원본 EXIF 장비시각과 함께 보존됩니다.</p>
+        <p className="mt-5 text-xs leading-5 text-[#7a8581]">모든 표시시각은 KST(UTC+09)입니다. 막대에 마우스를 올리면 세트명과 변환 기준을 볼 수 있으며 원본 EXIF 장비시각도 함께 보존됩니다.</p>
       </div>
     </section>
   );

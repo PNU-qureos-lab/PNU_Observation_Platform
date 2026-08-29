@@ -10,6 +10,10 @@ type ObservationPayload = { campaigns: { id: string; ramses?: { label?: string; 
 
 const chartConfig = { intensity: { label: '555 nm 값', color: '#007f8a' } } satisfies ChartConfig;
 
+function formatKstTime(value: string) {
+  return new Date(value).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Seoul' });
+}
+
 export function RamsesChart({ campaignId, domainId }: { campaignId: string; domainId: string }) {
   const [series, setSeries] = useState<RamsesPoint[]>([]);
   const [meta, setMeta] = useState({ wavelength: 554.353, unit: 'mW/(m²·nm)', label: 'RAMSES 555 nm', recordCount: 0, sampledCount: 0, start: '', end: '' });
@@ -38,7 +42,7 @@ export function RamsesChart({ campaignId, domainId }: { campaignId: string; doma
   }, [campaignId, domainId]);
 
   const data = useMemo(() => series.map((point) => ({
-    time: new Date(point.time).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
+    time: formatKstTime(point.time),
     intensity: Number(point.intensity.toFixed(3)),
   })), [series]);
 
@@ -47,7 +51,7 @@ export function RamsesChart({ campaignId, domainId }: { campaignId: string; doma
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><p className="text-xs font-bold tracking-[0.12em] text-[#65736e] uppercase">RAMSES time series</p><h3 className="mt-1 text-lg font-black">{meta.label} · 555 nm 근접밴드</h3><p className="mt-1 text-xs text-[#65736e]">원본 {meta.recordCount.toLocaleString()}건 · 차트 표본 {meta.sampledCount.toLocaleString()}건 · {meta.start ? new Date(meta.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) : '시각 미확인'}–{meta.end ? new Date(meta.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) : '시각 미확인'}</p></div><p className="font-mono text-xs text-[#65736e]">{meta.wavelength} nm · {meta.unit}</p></div>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><p className="text-xs font-bold tracking-[0.12em] text-[#65736e] uppercase">RAMSES time series</p><h3 className="mt-1 text-lg font-black">{meta.label} · 555 nm 근접밴드</h3><p className="mt-1 text-xs text-[#65736e]">원본 {meta.recordCount.toLocaleString()}건 · 차트 표본 {meta.sampledCount.toLocaleString()}건 · {meta.start ? formatKstTime(meta.start) : '시각 미확인'}–{meta.end ? formatKstTime(meta.end) : '시각 미확인'} KST</p></div><p className="font-mono text-xs text-[#65736e]">{meta.wavelength} nm · {meta.unit}</p></div>
       <ChartContainer config={chartConfig} className="h-[300px] w-full aspect-auto">
         <LineChart data={data} margin={{ left: 0, right: 16, top: 12, bottom: 8 }}>
           <CartesianGrid vertical={false} strokeDasharray="4 4" />

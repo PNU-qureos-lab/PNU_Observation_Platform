@@ -75,12 +75,20 @@ function evenlySample(items, maximum) {
   return [...new Set(selected)];
 }
 
-function normalizeTime(value) {
+function normalizeTime(value, basis = 'kst-local') {
   if (!value) return null;
   const match = String(value).match(/^(\d{4}):(\d{2}):(\d{2}) (\d{2}:\d{2}:\d{2})/);
-  if (match) return `${match[1]}-${match[2]}-${match[3]}T${match[4]}+09:00`;
   const datMatch = String(value).match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2}:\d{2})/);
-  if (datMatch) return `${datMatch[1]}-${datMatch[2]}-${datMatch[3]}T${datMatch[4]}+09:00`;
+  const parts = match ?? datMatch;
+  if (parts) {
+    if (basis === 'utc') {
+      const [hour, minute, second] = parts[4].split(':').map(Number);
+      const kst = new Date(Date.UTC(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]), hour + 9, minute, second));
+      const pad = (number) => String(number).padStart(2, '0');
+      return `${kst.getUTCFullYear()}-${pad(kst.getUTCMonth() + 1)}-${pad(kst.getUTCDate())}T${pad(kst.getUTCHours())}:${pad(kst.getUTCMinutes())}:${pad(kst.getUTCSeconds())}+09:00`;
+    }
+    return `${parts[1]}-${parts[2]}-${parts[3]}T${parts[4]}+09:00`;
+  }
   return String(value);
 }
 
@@ -126,7 +134,7 @@ function makeTrack(mission, visitPath, kind, fileMatcher, recursive = false) {
   const points = metadata.map((entry) => ({
     lat: Number(entry.GPSLatitude),
     lon: Number(entry.GPSLongitude),
-    time: normalizeTime(entry.DateTimeOriginal ?? entry.CreateDate),
+    time: normalizeTime(entry.DateTimeOriginal ?? entry.CreateDate, kind === '다분광' ? 'utc' : 'kst-local'),
     source: basename(entry.SourceFile ?? ''),
   })).filter((point) => Number.isFinite(point.lat) && Number.isFinite(point.lon) && point.lat >= 30 && point.lat <= 40 && point.lon >= 120 && point.lon <= 135);
   points.sort((a, b) => String(a.time ?? a.source).localeCompare(String(b.time ?? b.source)));
@@ -142,7 +150,7 @@ function makeTrack(mission, visitPath, kind, fileMatcher, recursive = false) {
     model: metadata.find((entry) => entry.Model)?.Model ?? (kind === 'LiDAR' ? 'DJI Zenmuse L1' : 'GPS EXIF'),
     start: points.find((point) => point.time)?.time ?? null,
     end: [...points].reverse().find((point) => point.time)?.time ?? null,
-    timeBasis: kind === '다분광' ? 'MicaSense EXIF 장비시각(시차 미보정)' : '카메라 로컬시각(KST 가정)',
+    timeBasis: kind === '다분광' ? 'MicaSense EXIF UTC → KST(UTC+09)' : '카메라 로컬시각을 KST(UTC+09)로 해석',
     distanceM: Math.round(distanceM),
     sourceImageCount: files.length,
     sampledPointCount: points.length,
@@ -233,6 +241,7 @@ function extractRamses(visitPath) {
     end: series.at(-1).time,
     recordCount: allFiles.length,
     sampledCount: series.length,
+    timeBasis: 'RAMSES DAT 장비 로컬시각을 KST(UTC+09)로 해석',
     series,
   };
 }
@@ -257,6 +266,9 @@ const campaigns = [];
 const metadata = {
   generatedAt: new Date().toISOString(),
   source: '농진청 드론 관측자료 모음',
+  timeZone: 'Asia/Seoul',
+  timeZoneLabel: 'KST (UTC+09)',
+  timeNormalization: 'MicaSense EXIF UTC + 9시간; DJI·RAMSES 로컬시각은 KST로 해석',
   note: '비행경로는 각 촬영세트의 GPS EXIF를 균등 표본화했습니다. RAMSES는 555 nm 근접밴드를 시간축으로 표본화했습니다.',
 };
 for (const [folder, id] of visits) {
