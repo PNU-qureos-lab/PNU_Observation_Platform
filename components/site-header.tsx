@@ -26,7 +26,7 @@ export function SiteHeader() {
           {mainLinks.slice(0, 1).map((link) => <Link key={link.href} href={link.href} className="hover:text-[#006d77]">{link.label}</Link>)}
           {domains.map((domain) => <Link key={domain.id} href={`/explore?domain=${domain.id}`} className="hover:text-[#006d77]">{domain.label}</Link>)}
           {mainLinks.slice(1).map((link) => <Link key={link.href} href={link.href} className="hover:text-[#006d77]">{link.label}</Link>)}
-          <a href="https://github.com/PNU-qureos-lab" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 hover:text-[#006d77]"><Code2 className="size-4" /> GitHub</a>
+          <a href="https://github.com/PNU-qureos-lab/PNU_Observation_Platform" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 hover:text-[#006d77]"><Code2 className="size-4" /> GitHub</a>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -42,7 +42,7 @@ export function SiteHeader() {
                 {mainLinks.slice(0, 1).map((link) => <Link key={link.href} href={link.href} className="rounded-xl px-4 py-3 font-bold hover:bg-white">{link.label}</Link>)}
                 {domains.map((domain) => <Link key={domain.id} href={`/explore?domain=${domain.id}`} className="rounded-xl px-4 py-3 font-bold hover:bg-white">{domain.label} 관측</Link>)}
                 {mainLinks.slice(1).map((link) => <Link key={link.href} href={link.href} className="rounded-xl px-4 py-3 font-bold hover:bg-white">{link.label}</Link>)}
-                <a href="https://github.com/PNU-qureos-lab" target="_blank" rel="noreferrer" className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-3 font-bold"><Code2 className="size-4" /> GitHub 조직</a>
+                <a href="https://github.com/PNU-qureos-lab/PNU_Observation_Platform" target="_blank" rel="noreferrer" className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-3 font-bold"><Code2 className="size-4" /> 통합 GitHub</a>
               </nav>
             </SheetContent>
           </Sheet>

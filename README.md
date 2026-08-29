@@ -2,6 +2,11 @@
 
 갯벌·농림을 시작으로 현장, 드론, 항공, 위성 관측자료를 날짜·위치·센서 기준으로 공개하는 확장형 통합 플랫폼입니다.
 
+## 접속 주소
+
+- 공개 사이트: <https://pnu-observation-hub.seung1100.chatgpt.site>
+- 통합 GitHub: <https://github.com/PNU-qureos-lab/PNU_Observation_Platform>
+
 ## 포함 자료
 
 - 갯벌 현장관측: 곰소만·황도, ASD, Specim-IQ, RAMSES, UAV, FENIX, LiDAR, Chl-a, 퇴적물
