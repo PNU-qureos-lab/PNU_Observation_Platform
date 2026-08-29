@@ -4,6 +4,7 @@ import { AlertTriangle, ArrowLeft, Clock3, Database, ExternalLink, FileArchive, 
 
 import { Badge } from '@/components/ui/badge';
 import { FlightTrackExplorer } from '@/components/flight-track-explorer';
+import { ObservationTimeline } from '@/components/observation-timeline';
 import { ObservationMap } from '@/components/observation-map';
 import { RamsesChart } from '@/components/ramses-chart';
 import { domains, getDomain, getObservation, observations } from '@/lib/catalog';
@@ -52,7 +53,7 @@ export default async function ObservationDetailPage({ params }: { params: Promis
       <section className="grid gap-6 py-8 lg:grid-cols-[minmax(0,1fr)_330px]">
         <div className="overflow-hidden rounded-[28px] border border-border bg-white p-2"><ObservationMap items={[item]} className="h-[460px] lg:h-[560px]" /></div>
         <aside className="grid content-start gap-4">
-          <div className="rounded-[24px] border border-border bg-white p-6"><p className="text-xs font-bold tracking-[0.13em] text-[#65736e] uppercase">Observation window</p><p className="mt-2 font-mono text-3xl font-black text-[#00535b]">{item.timeWindow ?? '확인 중'}</p><p className="mt-3 text-sm leading-6 text-[#65736e]">표시시각 KST · 원본 장비시각은 메타데이터에 별도 보존</p></div>
+          <div className="rounded-[24px] border border-border bg-white p-6"><p className="text-xs font-bold tracking-[0.13em] text-[#65736e] uppercase">Observation window</p><p className="mt-2 font-mono text-3xl font-black text-[#00535b]">{item.timeWindow ?? '확인 중'}</p><p className="mt-3 text-sm leading-6 text-[#65736e]">전체 관측창 · 센서별 상세 구간은 아래 통합 타임라인에서 확인</p></div>
           <div className="rounded-[24px] border border-border bg-white p-6"><h2 className="font-black">위치 품질</h2><div className="mt-4 flex items-start gap-3"><Navigation className="mt-0.5 size-5 text-[#006d77]" /><div><p className="font-bold">{qualityCopy[item.positionQuality]}</p><p className="mt-1 text-sm leading-6 text-[#65736e]">{item.coordinateSource ?? 'GPS 메타데이터 없음'}</p>{item.latitude != null && <p className="mt-2 font-mono text-xs text-[#65736e]">{item.latitude.toFixed(6)}, {item.longitude?.toFixed(6)}</p>}</div></div></div>
           <div className="rounded-[24px] border border-border bg-white p-6"><h2 className="font-black">활성 센서·자료</h2><div className="mt-4 flex flex-wrap gap-2">{item.sensors.map((sensor) => <Badge key={sensor} variant="secondary" className="bg-[#edf0ec] text-[#465550]">{sensor}</Badge>)}</div></div>
           {item.note && <div className="rounded-[24px] border border-[#f0c58e] bg-[#fff6e9] p-6"><h2 className="flex items-center gap-2 font-black text-[#9a5b0b]"><AlertTriangle className="size-4" />자료 주의사항</h2><p className="mt-3 text-sm leading-6 text-[#7a5629]">{item.note}</p></div>}
@@ -65,6 +66,8 @@ export default async function ObservationDetailPage({ params }: { params: Promis
         <div className="rounded-[22px] border border-border bg-white p-5"><Images className="size-5 text-[#4f8f24]" /><p className="mt-6 text-xs font-bold text-[#65736e]">RGB 이미지</p><strong className="mt-1 block font-mono text-xl">{item.imageCount?.toLocaleString() ?? '—'}</strong></div>
         <div className="rounded-[22px] border border-border bg-white p-5"><RadioTower className="size-5 text-[#5e35b1]" /><p className="mt-6 text-xs font-bold text-[#65736e]">센서·자료유형</p><strong className="mt-1 block font-mono text-xl">{item.sensors.length}</strong></div>
       </section>
+
+      <ObservationTimeline campaignId={item.id} campaignDate={item.date} domainId={item.domainId} timeWindow={item.timeWindow} sensors={item.sensors} />
 
       <FlightTrackExplorer campaignId={item.id} domainId={item.domainId} />
 

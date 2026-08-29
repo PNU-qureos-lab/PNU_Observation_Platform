@@ -13,7 +13,7 @@
 - 농림 현장관측: 밀양·부산·김해·전주, RAMSES, RGB, Red-edge, Skyphotos, LiDAR, Metashape
 - 위성자료: PlanetScope 8밴드 표면반사도, 장면 footprint, 품질 메타데이터와 RGB 미리보기
 
-`public/data/tidal-observations.json`과 `public/data/agriculture-observations.json`에는 날짜별 세트 GPS 비행경로와 RAMSES 555 nm 시계열이 들어 있습니다. 갯벌 JSON에는 Specim-IQ 현장점, 항공 초분광 세트와 전체 PlanetScope 장면 메타데이터도 포함합니다. 농림 상세 JSON은 `scripts/build-agriculture-observations.mjs`로 실제 RGB·Red-edge·LiDAR EXIF와 RAMSES DAT에서 다시 생성할 수 있습니다.
+`public/data/tidal-observations.json`과 `public/data/agriculture-observations.json`에는 날짜별 세트 GPS 비행경로와 RAMSES 555 nm 시계열이 들어 있습니다. 상세페이지는 RGB·다분광·LiDAR 비행, RAMSES 연속측정, Specim-IQ 현장측정과 FENIX 항공관측을 하나의 시간축으로 정렬합니다. 갯벌 JSON에는 Specim-IQ 현장점, 항공 초분광 세트와 전체 PlanetScope 장면 메타데이터도 포함합니다. 농림 상세 JSON은 `scripts/build-agriculture-observations.mjs`로 실제 RGB·Red-edge·LiDAR EXIF와 RAMSES DAT에서 다시 생성할 수 있습니다.
 
 경로 생성 시 로컬 원자료 경로는 `AGRICULTURE_OBSERVATION_ROOT` 환경변수로 전달합니다. 공개 JSON은 대용량 원본 대신 세트별 균등 표본 GPS와 555 nm 시계열 표본을 저장합니다.
 
