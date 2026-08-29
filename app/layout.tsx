@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://pnu-observation-hub.seung1100.chatgpt.site'),
   title: {
     default: 'PNU 통합 관측자료 플랫폼',
     template: '%s | PNU 관측자료',
