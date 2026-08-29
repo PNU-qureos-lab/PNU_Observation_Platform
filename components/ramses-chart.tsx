@@ -6,27 +6,36 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 
 type RamsesPoint = { time: string; intensity: number; wavelength: number };
-type TidalPayload = { campaigns: { id: string; ramses?: { actualNm?: number; unit?: string; series?: RamsesPoint[] } }[] };
+type ObservationPayload = { campaigns: { id: string; ramses?: { label?: string; measurement?: string; actualNm?: number; unit?: string; recordCount?: number; sampledCount?: number; start?: string; end?: string; series?: RamsesPoint[] } | null }[] };
 
-const chartConfig = { intensity: { label: '복사강도', color: '#007f8a' } } satisfies ChartConfig;
+const chartConfig = { intensity: { label: '555 nm 값', color: '#007f8a' } } satisfies ChartConfig;
 
-export function RamsesChart({ campaignId }: { campaignId: string }) {
+export function RamsesChart({ campaignId, domainId }: { campaignId: string; domainId: string }) {
   const [series, setSeries] = useState<RamsesPoint[]>([]);
-  const [meta, setMeta] = useState({ wavelength: 554.353, unit: 'mW/(m²·nm)' });
+  const [meta, setMeta] = useState({ wavelength: 554.353, unit: 'mW/(m²·nm)', label: 'RAMSES 555 nm', recordCount: 0, sampledCount: 0, start: '', end: '' });
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    fetch('/data/tidal-observations.json')
-      .then((response) => response.json() as Promise<TidalPayload>)
+    const source = domainId === 'tidal-flat' ? '/data/tidal-observations.json' : '/data/agriculture-observations.json';
+    fetch(source)
+      .then((response) => response.json() as Promise<ObservationPayload>)
       .then((payload) => {
         const ramses = payload.campaigns.find((entry) => entry.id === campaignId)?.ramses;
         const raw = ramses?.series ?? [];
         const stride = Math.max(1, Math.ceil(raw.length / 320));
         setSeries(raw.filter((_, index) => index % stride === 0));
-        setMeta({ wavelength: ramses?.actualNm ?? 554.353, unit: ramses?.unit ?? 'mW/(m²·nm)' });
+        setMeta({
+          wavelength: ramses?.actualNm ?? 554.353,
+          unit: ramses?.unit ?? 'mW/(m²·nm)',
+          label: ramses?.label ?? 'RAMSES 555 nm',
+          recordCount: ramses?.recordCount ?? raw.length,
+          sampledCount: ramses?.sampledCount ?? raw.length,
+          start: ramses?.start ?? raw[0]?.time ?? '',
+          end: ramses?.end ?? raw.at(-1)?.time ?? '',
+        });
       })
       .finally(() => setLoaded(true));
-  }, [campaignId]);
+  }, [campaignId, domainId]);
 
   const data = useMemo(() => series.map((point) => ({
     time: new Date(point.time).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
@@ -34,11 +43,11 @@ export function RamsesChart({ campaignId }: { campaignId: string }) {
   })), [series]);
 
   if (!loaded) return <div className="grid h-[280px] place-items-center rounded-2xl bg-[#edf0ec] text-sm text-[#65736e]">RAMSES 시계열을 불러오는 중입니다.</div>;
-  if (!data.length) return <div className="grid h-[220px] place-items-center rounded-2xl border border-dashed border-border bg-[#f8faf7] p-8 text-center text-sm text-[#65736e]">이 관측일에는 공개 가능한 RAMSES 555 nm 시계열이 없습니다.</div>;
+  if (!data.length) return <div className="grid h-[220px] place-items-center rounded-2xl border border-dashed border-border bg-[#f8faf7] p-8 text-center text-sm text-[#65736e]">이 관측일에는 실제 DAT 파일이 없거나 공개 가능한 RAMSES 555 nm 시계열이 없습니다.</div>;
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><p className="text-xs font-bold tracking-[0.12em] text-[#65736e] uppercase">RAMSES time series</p><h3 className="mt-1 text-lg font-black">555 nm 근접밴드 시계열</h3></div><p className="font-mono text-xs text-[#65736e]">{meta.wavelength} nm · {meta.unit}</p></div>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><p className="text-xs font-bold tracking-[0.12em] text-[#65736e] uppercase">RAMSES time series</p><h3 className="mt-1 text-lg font-black">{meta.label} · 555 nm 근접밴드</h3><p className="mt-1 text-xs text-[#65736e]">원본 {meta.recordCount.toLocaleString()}건 · 차트 표본 {meta.sampledCount.toLocaleString()}건 · {meta.start ? new Date(meta.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) : '시각 미확인'}–{meta.end ? new Date(meta.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) : '시각 미확인'}</p></div><p className="font-mono text-xs text-[#65736e]">{meta.wavelength} nm · {meta.unit}</p></div>
       <ChartContainer config={chartConfig} className="h-[300px] w-full aspect-auto">
         <LineChart data={data} margin={{ left: 0, right: 16, top: 12, bottom: 8 }}>
           <CartesianGrid vertical={false} strokeDasharray="4 4" />

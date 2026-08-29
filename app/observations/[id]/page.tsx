@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { AlertTriangle, ArrowLeft, Clock3, Database, ExternalLink, FileArchive, Images, MapPin, Navigation, Plane, RadioTower } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
+import { FlightTrackExplorer } from '@/components/flight-track-explorer';
 import { ObservationMap } from '@/components/observation-map';
 import { RamsesChart } from '@/components/ramses-chart';
 import { domains, getDomain, getObservation, observations } from '@/lib/catalog';
@@ -65,8 +66,10 @@ export default async function ObservationDetailPage({ params }: { params: Promis
         <div className="rounded-[22px] border border-border bg-white p-5"><RadioTower className="size-5 text-[#5e35b1]" /><p className="mt-6 text-xs font-bold text-[#65736e]">센서·자료유형</p><strong className="mt-1 block font-mono text-xl">{item.sensors.length}</strong></div>
       </section>
 
+      <FlightTrackExplorer campaignId={item.id} domainId={item.domainId} />
+
       <section className="grid gap-6 py-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,.6fr)]">
-        <div className="rounded-[26px] border border-border bg-white p-6 sm:p-8"><p className="text-xs font-bold tracking-[0.13em] text-[#65736e] uppercase">Observation summary</p><h2 className="mt-2 text-2xl font-black">관측 개요</h2><p className="mt-5 text-base leading-8 text-[#465550]">{item.summary}</p>{hasRamses && <div className="mt-8 border-t border-border pt-8"><RamsesChart campaignId={item.id} /></div>}</div>
+        <div className="rounded-[26px] border border-border bg-white p-6 sm:p-8"><p className="text-xs font-bold tracking-[0.13em] text-[#65736e] uppercase">Observation summary</p><h2 className="mt-2 text-2xl font-black">관측 개요</h2><p className="mt-5 text-base leading-8 text-[#465550]">{item.summary}</p>{hasRamses && <div className="mt-8 border-t border-border pt-8"><RamsesChart campaignId={item.id} domainId={item.domainId} /></div>}</div>
         <div className="rounded-[26px] border border-border bg-[#143f43] p-6 text-white sm:p-8"><FileArchive className="size-6 text-[#82d3de]" /><h2 className="mt-8 text-xl font-black">데이터 파이프라인</h2><div className="mt-6 grid gap-3 text-sm"><div className="flex items-center justify-between rounded-xl bg-white/8 px-4 py-3"><span>원자료 RAW</span><strong>공개</strong></div><div className="flex items-center justify-between rounded-xl bg-white/8 px-4 py-3"><span>처리자료 PROC</span><strong>{item.status === 'ready' ? '확인 중' : '공개'}</strong></div><div className="flex items-center justify-between rounded-xl bg-white/8 px-4 py-3"><span>결과자료 RESULT</span><strong>{item.status === 'processed' ? '공개' : '자료별 상이'}</strong></div></div><a href={item.repository} target="_blank" rel="noreferrer" className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-black text-[#143f43]"><Database className="size-4" /> 저장소 열기</a></div>
       </section>
 
