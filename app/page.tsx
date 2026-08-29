@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { ArrowRight, CalendarDays, Database, Map, Satellite, Sprout, Waves } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -29,8 +28,8 @@ export default function Home() {
             갯벌과 농림을 시작으로 현장·드론·항공·위성 자료를 하나의 날짜, 위치, 센서 체계로 탐색합니다. 새로운 관측 분야는 카탈로그에 등록하는 즉시 같은 화면에 연결됩니다.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/explore" className="inline-flex h-12 items-center gap-2 rounded-full bg-[#006d77] px-6 text-sm font-bold text-white transition hover:bg-[#00535b]">관측자료 탐색 <ArrowRight className="size-4" /></Link>
-            <Link href="/satellite" className="inline-flex h-12 items-center gap-2 rounded-full border border-[#006d77] bg-white px-6 text-sm font-bold text-[#00535b] transition hover:bg-[#e8f6f5]"><Satellite className="size-4" /> 위성자료 보기</Link>
+            <a href="/explore" className="inline-flex h-12 items-center gap-2 rounded-full bg-[#006d77] px-6 text-sm font-bold text-white transition hover:bg-[#00535b]">관측자료 탐색 <ArrowRight className="size-4" /></a>
+            <a href="/satellite" className="inline-flex h-12 items-center gap-2 rounded-full border border-[#006d77] bg-white px-6 text-sm font-bold text-[#00535b] transition hover:bg-[#e8f6f5]"><Satellite className="size-4" /> 위성자료 보기</a>
           </div>
         </div>
 
@@ -71,7 +70,7 @@ export default function Home() {
             const Icon = iconMap[domain.icon];
             const count = observations.filter((item) => item.domainId === domain.id).length;
             return (
-              <Link key={domain.id} href={`/explore?domain=${domain.id}`} className="group rounded-[26px] border border-border bg-white p-6 transition hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(22,72,58,.10)] sm:p-7">
+              <a key={domain.id} href={`/explore?domain=${domain.id}`} className="group rounded-[26px] border border-border bg-white p-6 transition hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(22,72,58,.10)] sm:p-7">
                 <div className="flex items-start justify-between gap-5">
                   <span className="grid size-12 place-items-center rounded-2xl" style={{ background: domain.light, color: domain.color }}><Icon className="size-6" /></span>
                   <span className="font-mono text-sm text-[#65736e]">{String(count).padStart(2, '0')} records</span>
@@ -79,7 +78,7 @@ export default function Home() {
                 <h3 className="mt-8 text-2xl font-black tracking-[-0.04em]">{domain.label} <span className="text-base font-medium text-[#65736e]">{domain.labelEn}</span></h3>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-[#65736e]">{domain.description}</p>
                 <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold" style={{ color: domain.color }}>분야 자료 보기 <ArrowRight className="size-4 transition group-hover:translate-x-1" /></span>
-              </Link>
+              </a>
             );
           })}
         </div>
@@ -89,13 +88,14 @@ export default function Home() {
         <div className="shell">
           <div className="mb-7 flex items-end justify-between gap-4">
             <div><p className="text-xs font-bold tracking-[0.16em] text-[#65736e] uppercase">Recent observations</p><h2 className="mt-2 text-2xl font-black tracking-[-0.04em]">최근 관측자료</h2></div>
-            <Link href="/explore" className="text-sm font-bold text-[#006d77]">전체 보기 →</Link>
+            <a href="/explore" className="text-sm font-bold text-[#006d77]">전체 보기 →</a>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {recent.map((item) => {
               const domain = domains.find((entry) => entry.id === item.domainId)!;
               return (
-                <Card key={item.id} className="gap-0 overflow-hidden rounded-[24px] border-0 py-0 ring-1 ring-[#d7dfda] transition hover:-translate-y-1">
+                <a key={item.id} href={`/observations/${item.id}`} className="group block">
+                <Card className="gap-0 overflow-hidden rounded-[24px] border-0 py-0 ring-1 ring-[#d7dfda] transition group-hover:-translate-y-1">
                   <div className="relative aspect-[4/2.35] overflow-hidden bg-[#e7ece8]">
                     {item.cover ? <img src={item.cover} alt={`${item.place} ${item.date} 대표사진`} className="h-full w-full object-cover transition duration-500 hover:scale-105" /> : <div className="data-grid h-full" />}
                     <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold backdrop-blur" style={{ color: domain.color }}>{domain.label}</span>
@@ -107,6 +107,7 @@ export default function Home() {
                     <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-xs text-[#65736e]"><span>{statusLabel(item.status)}</span><ArrowRight className="size-4" /></div>
                   </CardContent>
                 </Card>
+                </a>
               );
             })}
           </div>

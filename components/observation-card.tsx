@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { ArrowRight, Clock3, MapPin } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +13,7 @@ const statusCopy = {
 export function ObservationCard({ item, compact = false }: { item: Observation; compact?: boolean }) {
   const domain = domains.find((entry) => entry.id === item.domainId)!;
   return (
-    <Link href={`/observations/${item.id}`} className="group block">
+    <a href={`/observations/${item.id}`} className="group block">
       <Card className="gap-0 overflow-hidden rounded-[24px] border-0 py-0 ring-1 ring-[#d7dfda] transition duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_22px_50px_rgba(22,72,58,.10)]">
         <div className={`relative overflow-hidden bg-[#e7ece8] ${compact ? 'aspect-[16/7]' : 'aspect-[16/8.5]'}`}>
           {item.cover ? <img src={item.cover} alt={`${item.place} ${item.date} 대표사진`} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /> : <div className="data-grid h-full" />}
@@ -35,6 +34,6 @@ export function ObservationCard({ item, compact = false }: { item: Observation; 
           <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-xs font-bold text-[#006d77]"><span>관측 상세</span><ArrowRight className="size-4 transition group-hover:translate-x-1" /></div>
         </CardContent>
       </Card>
-    </Link>
+    </a>
   );
 }

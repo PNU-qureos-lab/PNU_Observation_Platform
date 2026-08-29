@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { AlertTriangle, ArrowLeft, Clock3, Database, ExternalLink, FileArchive, Images, MapPin, Navigation, Plane, RadioTower } from 'lucide-react';
 
@@ -43,7 +42,7 @@ export default async function ObservationDetailPage({ params }: { params: Promis
 
   return (
     <main className="shell py-8 sm:py-12">
-      <Link href="/explore" className="inline-flex items-center gap-2 text-sm font-bold text-[#65736e] hover:text-[#006d77]"><ArrowLeft className="size-4" /> 관측자료로 돌아가기</Link>
+      <a href="/explore" className="inline-flex items-center gap-2 text-sm font-bold text-[#65736e] hover:text-[#006d77]"><ArrowLeft className="size-4" /> 관측자료로 돌아가기</a>
       <div className="mt-6 flex flex-col gap-6 border-b border-border pb-8 lg:flex-row lg:items-end lg:justify-between">
         <div><Badge className="mb-4" style={{ background: domain.light, color: domain.color }}>{domain.label} · {domain.labelEn}</Badge><p className="font-mono text-sm font-bold text-[#65736e]">OBS-{item.date.replaceAll('-', '')}</p><h1 className="mt-2 text-3xl font-black tracking-[-0.055em] sm:text-5xl">{item.date} {item.title}</h1><p className="mt-4 flex items-center gap-2 text-[#65736e]"><MapPin className="size-4" />{item.region} · {item.place}</p></div>
         <a href={item.repository} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#006d77] px-5 text-sm font-bold text-white">GitHub 원본 보기 <ExternalLink className="size-4" /></a>
